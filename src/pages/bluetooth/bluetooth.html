@@ -13,34 +13,34 @@
 </ion-header>
 
 <ion-content padding>
-  <h5>Seleccione el dispositivo ELM327 bluetooth al cual desea conectarse:</h5>
+  <h5>Select ELM327 bluetooth device:</h5>
   
 
-  <ion-refresher *ngIf="mostrarSpiner === false" (ionRefresh)="refreshBluetooth($event)">
-    <ion-refresher-content refreshingText="Buscando dispositivos bluetooth"></ion-refresher-content>
+  <ion-refresher *ngIf="spinner === false" (ionRefresh)="refreshBluetooth($event)">
+    <ion-refresher-content refreshingText="Searching"></ion-refresher-content>
   </ion-refresher>
 
-  <ion-segment [hidden]="mostrarSpiner === false" align="center">
+  <ion-segment [hidden]="spinner === false" align="center">
     <ion-spinner></ion-spinner>
-    Buscando dispositivos bluetooth
+    Searching
   </ion-segment>
 
   <ion-list>
     <ion-list-header>
-      Dispositivos Disponibles
+      Available Devices
     </ion-list-header>
-    <button (click)="revisarConexion(device)" *ngFor="let device of devices" ion-item>
+    <button (click)="reviseconnection(device)" *ngFor="let device of devices" ion-item>
       <ion-icon name="bluetooth" item-start></ion-icon>
-      <h2>Nombre: {{device.name}}</h2>
-      <p>Dirección <span [hidden]="device.address == undefined">mac</span><span [hidden]="device.uuid == undefined">uuid</span>: {{device.address}}{{device.uuid}}</p>
-      <p><span [hidden]="device.class == undefined">Clase</span><span [hidden]="device.rssi == undefined">Rssi</span>: {{device.class}}{{device.rssi}}</p>
+      <h2>Name: {{device.name}}</h2>
+      <p>Discrption <span [hidden]="device.address == undefined">mac</span><span [hidden]="device.uuid == undefined">uuid</span>: {{device.address}}{{device.uuid}}</p>
+      <p><span [hidden]="device.class == undefined">Class</span><span [hidden]="device.rssi == undefined">Rssid</span>: {{device.class}}{{device.rssi}}</p>
     </button>
   </ion-list>
 <!--
   <ion-item-group>
     <h3>Dispositivos Disponibles</h3>
     <ion-item-sliding *ngFor="let device of devices">
-      <button (click)="revisarConexion(device)" ion-item>
+      <button (click)="revisarconnection(device)" ion-item>
         <h3>Nombre: {{device.name}}</h3>
         <p>Id: {{device.id}}</p>
         <p>Dirección <span [hidden]="device.address == undefined">mac</span><span [hidden]="device.uuid == undefined">uuid</span>: {{device.address}}{{device.uuid}}</p>
@@ -50,28 +50,28 @@
   </ion-item-group>
 -->
   <!-- 
-    mostrar iconos de conexion o desconexion cambiar esto despues 
+    mostrar iconos de connection o desconnection cambiar esto despues 
       
   -->
-  <h5 *ngIf="estaConectado == true"><ion-icon name="bluetooth"></ion-icon> Usted está conectado a: {{conectadoA}}</h5>
-  <h5 *ngIf="estaConectado == false"><ion-icon name="bluetooth"></ion-icon> No hay conexión activa</h5>
+  <h5 *ngIf="estaConectado == true"><ion-icon name="bluetooth"></ion-icon> Connected to : {{conectadoA}}</h5>
+  <h5 *ngIf="estaConectado == false"><ion-icon name="bluetooth"></ion-icon> No active device</h5>
   
   <!--
   <ion-list *ngFor="let item of dataSalida">
     <ion-list-header>
       Respuestas
     </ion-list-header>
-    <ion-item>Mensaje: {{item.Mensaje}}</ion-item>
+    <ion-item>message: {{item.message}}</ion-item>
     <ion-item>{{item.Modo}}, {{item.Nombre}}</ion-item>
     <ion-item>{{item.Descripcion}}, Valor: {{item.Valor}}, Unidad: {{item.Unidad}}</ion-item>
     <ion-item>{{item.Fecha}}</ion-item>
   </ion-list>
-  <button ion-button (click)="limpiarMensajes()" block>Limpiar Mensajes</button>
+  <button ion-button (click)="limpiarmessages()" block>Limpiar messages</button>
   <button ion-button (click)="iniciarIntervalo()" block>Iniciar Intervalo</button>
 
-  <form (ngSubmit)="enviarMensajes();">
+  <form (ngSubmit)="enviarmessages();">
     <ion-item>
-      <ion-input type="text" [(ngModel)]="mensaje" name="mensaje"></ion-input>
+      <ion-input type="text" [(ngModel)]="message" name="message"></ion-input>
     </ion-item>
     <ion-segment>
       <button ion-button (click)="desconectar()" block>Desconectar</button>
@@ -79,11 +79,11 @@
     </ion-segment>
   </form>
 -->
-  <div [hidden]="devices.length > 0 || mostrarSpiner == true" text-center>
-    <p>No se han encontrado dispositivos, activa el bluetooth y desliza hacia abajo para volver a buscar</p>
+  <div [hidden]="devices.length > 0 || spinner == true" text-center>
+    <p>No device found, Please make sure your device is in range and discoverable</p>
   </div>
   <!-- cambiar esto despues
   <button ion-button (click)="siguiente()" block *ngIf="estaConectado == true">Siguiente</button>
   -->
-  <button ion-button (click)="siguiente()" block>Siguiente</button>
+  <button ion-button (click)="start()" block>Start</button>
 </ion-content>

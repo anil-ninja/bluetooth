@@ -4,7 +4,7 @@ import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 import { Observable } from 'rxjs';
 import { ISubscription } from "rxjs/Subscription";
 //servicio
-import { ComunicacionService } from '../../app/Servicios/ComunicacionService';
+import { CommunicationService } from '../../app/Service/CommunicationService';
 //paginas
 import { SeleccionSkinPage } from '../../pages/seleccion-skin/seleccion-skin';
 
@@ -17,10 +17,10 @@ import { SeleccionSkinPage } from '../../pages/seleccion-skin/seleccion-skin';
 export class BluetoothPage {
 
   devices: Array<any> = [];
-  mostrarSpiner = true;
-  mensaje: string = "";
-  conexion: ISubscription;
-  conexionMensajes: ISubscription;
+  spinner = true;
+  message: string = "";
+  connection: ISubscription;
+  connectionMessages: ISubscription;
   reader: Observable<any>;
   rawListener;
   //variables nuevas
@@ -39,13 +39,13 @@ export class BluetoothPage {
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
     private bluetoothSerial: BluetoothSerial,
-    public blueService: ComunicacionService,
+    public blueService: CommunicationService,
     public navCtrl: NavController,
   ) { 
     //contenido del cosntructor
 
   }
-  siguiente(){
+  start(){
     //abrir la pagina siguiente a la conexión, cambiar esto despues
     /*
     if (this.estaConectado){
@@ -60,7 +60,7 @@ export class BluetoothPage {
   iniciarIntervalo() {
     var sms = "010D";
     Observable.interval(5000).subscribe(() => {
-      this.enviarMensajesI(sms);
+      this.enviarmessagesI(sms);
     });
   }
   /**
@@ -70,10 +70,10 @@ export class BluetoothPage {
     this.platform.ready().then(() => {
       this.buscarBluetooth().then((success: Array<Object>) => {
         this.devices = success;
-        this.mostrarSpiner = false;
+        this.spinner = false;
       }, fail => {
         this.presentToast(fail);
-        this.mostrarSpiner = false;
+        this.spinner = false;
       });
     });
   }
@@ -81,7 +81,7 @@ export class BluetoothPage {
    * Al cerrar la aplicación se asegura de que se cierre la conexión bluetooth.
    */
   public ngOnDestroy() {
-    this.desconectar();
+    this.disconnecter();
   }
   /**
    * Busca los dispositivos bluetooth disponibles, evalúa si es posible usar la funcionalidad
@@ -95,18 +95,17 @@ export class BluetoothPage {
           if (success.length > 0) {
             resolve(success);
           } else {
-            reject('No se encontraron dispositivos');
+            reject('No device found');
           }
         }).catch((error) => {
           console.log(`[1] Error: ${JSON.stringify(error)}`);
-          reject('Bluetooth no disponible en esta plataforma');
+          reject('This device does not support Bluetooth Serial port');
         });
-        //ahora los pareados
-        
+        //ahora los pareados       
 
       }, fail => {
         console.log(`[2] Error: ${JSON.stringify(fail)}`);
-        reject('El bluetooth no está disponible o está apagado');
+        reject('Bluetooth is disabled');
       });
     });
   }
@@ -131,29 +130,29 @@ export class BluetoothPage {
    * Verifica si ya se encuentra conectado a un dispositivo bluetooth o no.
    * @param seleccion Son los datos del elemento seleccionado  de la lista
    */
-  revisarConexion(seleccion) {
+  reviseconnection(seleccion) {
     this.bluetoothSerial.isConnected().then(
       isConnected => {
         let alert = this.alertCtrl.create({
-          title: 'Reconectar',
-          message: '¿Desea reconectar a este dispositivo?',
+          title: 'Reconnect',
+          message: 'Do you want to reconnect?',
           buttons: [
             {
-              text: 'Cancelar',
+              text: 'Cancel',
               role: 'cancel',
               handler: () => {
                 console.log('Cancel clicked');
               }
             },
             {
-              text: 'Aceptar',
+              text: 'Accept',
               handler: () => {
-                this.desconectar();
-                this.conectar(seleccion.id).then(success => {
+                this.disconnecter();
+                this.connecter(seleccion.id).then(success => {
                   this.conectadoA = seleccion.name;
                   this.presentToast(success);
                 }, fail => {
-                  this.conectadoA = "No hay dispositivo";
+                  this.conectadoA = "Error in connecting";
                   this.estaConectado = true;
                   this.presentToast(fail);
                 });
@@ -164,25 +163,25 @@ export class BluetoothPage {
         alert.present();
       }, notConnected => {
         let alert = this.alertCtrl.create({
-          title: 'Conectar',
-          message: '¿Desea conectar el dispositivo?',
+          title: 'Connect',
+          message: 'Connect to this device?',
           buttons: [
             {
-              text: 'Cancelar',
+              text: 'Cancel',
               role: 'cancel',
               handler: () => {
                 console.log('Cancel clicked');
               }
             },
             {
-              text: 'Aceptar',
+              text: 'Accept',
               handler: () => {
-                this.conectar(seleccion.id).then(success => {
+                this.connecter(seleccion.id).then(success => {
                   this.conectadoA = seleccion.name;
                   this.estaConectado = true;
                   this.presentToast(success);
                 }, fail => {
-                  this.conectadoA = "No hay dispositivo";
+                  this.conectadoA = "Error occured";
                   this.presentToast(fail);
                 });
               }
@@ -195,36 +194,36 @@ export class BluetoothPage {
   /**
    * Se conceta a un dispostitivo bluetooth por su id.
    * @param id Es la id del dispositivo al que se desea conectarse
-   * @return {Promise<any>} Regresa un mensaje para indicar si se conectó exitosamente o no.
+   * @return {Promise<any>} Regresa un message para indicar si se conectó exitosamente o no.
    */
-  conectar(id: string): Promise<any> {
+  connecter(id: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.conexion = this.bluetoothSerial.connect(id).subscribe((data: Observable<any>) => {
+      this.connection = this.bluetoothSerial.connect(id).subscribe((data: Observable<any>) => {
         //lo vamos a comentar por mientras
-        //this.enviarMensajes();
-        resolve("Conectado");
+        //this.enviarmessages();
+        resolve("Connected");
       }, fail => {
         console.log(`[3] Error conexión: ${JSON.stringify(fail)}`);
-        reject("No se logro conectar");
+        reject("Can not connect to this device");
       });
     });
   }
   /**
    * Cierra el socket para la conexión con un dispositivo bluetooth.
    */
-  desconectar() {
-    if (this.conexionMensajes) {
-      this.conexionMensajes.unsubscribe();
+  disconnecter() {
+    if (this.connectionMessages) {
+      this.connectionMessages.unsubscribe();
     }
-    if (this.conexion) {
-      this.conexion.unsubscribe();
+    if (this.connection) {
+      this.connection.unsubscribe();
     }
   }
 
-  enviarMensajesI(sms) {
+  enviarmessagesI(sms) {
     sms = sms + '\r';
-    //this.presentToast('Enviando mensaje: ' + sms);
-    this.conexionMensajes =this.blueService.dataInOut(sms).subscribe(data => {
+    //this.presentToast('Enviando message: ' + sms);
+    this.connectionMessages =this.blueService.dataInOut(sms).subscribe(data => {
       let entrada = data.substr(0, data.length - 1);
       //this.presentToast('data:' + data);
       if (data && data.length > 0) {
@@ -232,16 +231,16 @@ export class BluetoothPage {
         if (obj.name && obj.name.length > 0) {
           //this.dataSalida.push(entidad);
           var entidad = {
-            Mensaje: sms,
-            Modo: obj.mode,
+            Message: sms,
+            Mode: obj.mode,
             Pid: obj.pid,
-            Nombre: obj.name,
-            Descripcion: obj.description,
-            Valor: obj.value,
-            Minimo: obj.min,
-            Maximo: obj.max,
-            Unidad: obj.unit,
-            Fecha: new Date()
+            Name: obj.name,
+            Description: obj.description,
+            Value: obj.value,
+            Minima: obj.min,
+            Maxima: obj.max,
+            Unit: obj.unit,
+            Date: new Date()
           };
           this.dataSalida.push(entidad);
         }
@@ -253,21 +252,21 @@ export class BluetoothPage {
           //this.presentToast('console log:' + entrada);
         }
       } else {
-        this.conexionMensajes.unsubscribe();
+        this.connectionMessages.unsubscribe();
       }
-      this.mensaje = "";
+      this.message = "";
     });
   }
 
   /**
-   * Permite enviar mensajes de texto vía serial al conectarse por bluetooth.
+   * Permite enviar messages de texto vía serial al conectarse por bluetooth.
    */
 
    /*
-  enviarMensajes() {
-    var sms = this.mensaje + '\r';
-    this.presentToast('Enviando mensaje: ' + sms);
-    this.conexionMensajes = this.dataInOut(sms).subscribe(data => {
+  enviarmessages() {
+    var sms = this.message + '\r';
+    this.presentToast('Enviando message: ' + sms);
+    this.connectionMessages = this.dataInOut(sms).subscribe(data => {
       let entrada = data.substr(0, data.length - 1);
       //this.presentToast('data:' + data);
       if (data && data.length > 0) {
@@ -295,19 +294,19 @@ export class BluetoothPage {
           this.presentToast('console log:' + entrada);
         }
       } else {
-        this.conexionMensajes.unsubscribe();
+        this.connectionMessages.unsubscribe();
       }
-      this.mensaje = "";
+      this.message = "";
     });
   }
 */
     /**
-   * Permite enviar mensajes de texto vía serial al conectarse por bluetooth.
+   * Permite enviar messages de texto vía serial al conectarse por bluetooth.
    */
-  enviarMensajes() {
-    var sms = this.mensaje + '\r';
-    //this.presentToast('Enviando mensaje: ' + sms);
-    this.conexionMensajes =this.blueService.dataInOut(sms).subscribe(data => {
+  enviarmessages() {
+    var sms = this.message + '\r';
+    //this.presentToast('Enviando message: ' + sms);
+    this.connectionMessages =this.blueService.dataInOut(sms).subscribe(data => {
       let entrada = data.substr(0, data.length - 1);
       //this.presentToast('data:' + data);
       if (data && data.length > 0) {
@@ -315,16 +314,16 @@ export class BluetoothPage {
         if (obj.name && obj.name.length > 0) {
           //this.dataSalida.push(entidad);
           var entidad = {
-            Mensaje: sms,
-            Modo: obj.mode,
+            Message: sms,
+            Mode: obj.mode,
             Pid: obj.pid,
-            Nombre: obj.name,
-            Descripcion: obj.description,
-            Valor: obj.value,
-            Minimo: obj.min,
-            Maximo: obj.max,
-            Unidad: obj.unit,
-            Fecha: new Date()
+            Name: obj.name,
+            Description: obj.description,
+            Value: obj.value,
+            Minima: obj.min,
+            Maxima: obj.max,
+            Unit: obj.unit,
+            Date: new Date()
           };
           this.dataSalida.push(entidad);
         }
@@ -336,15 +335,15 @@ export class BluetoothPage {
           //this.presentToast('console log:' + entrada);
         }
       } else {
-        this.conexionMensajes.unsubscribe();
+        this.connectionMessages.unsubscribe();
       }
-      this.mensaje = "";
+      this.message = "";
     });
   }
 
   /**
- * Presenta un cuadro de mensaje.
- * @param {string} text Mensaje a mostrar.
+ * Presenta un cuadro de message.
+ * @param {string} text message a mostrar.
  */
   private presentToast(text: string) {
     let toast = this.toastCtrl.create({
@@ -353,7 +352,7 @@ export class BluetoothPage {
     });
     toast.present();
   }
-  limpiarMensajes(){
+  limpiarmessages(){
     this.dataSalida = [];
   }
   

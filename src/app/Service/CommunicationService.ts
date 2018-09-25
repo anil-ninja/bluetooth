@@ -8,72 +8,72 @@ import {AppSettings } from '../AppSettings';
 
 @Injectable()
 
-export class ComunicacionService{
+export class CommunicationService{
 
     modeRealTime = "01";
     modeRequestDTC = "03";
     modeClearDTC = "04";
     modeVin = "09";
     velocidadActual = {
-      Mensaje: '',
-      Modo: '',
+      Message: '',
+      Mode: '',
       Pid: '',
-      Nombre: '',
-      Descripcion: '',
-      Valor: 0,
-      Minimo: 0,
-      Maximo: 0,
-      Unidad: '',
-      Fecha: new Date()
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
     };
     rpmActual = {
-      Mensaje: '',
-      Modo: '',
+      Message: '',
+      Mode: '',
       Pid: '',
-      Nombre: '',
-      Descripcion: '',
-      Valor: 0,
-      Minimo: 0,
-      Maximo: 0,
-      Unidad: '',
-      Fecha: new Date()
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
     };
     tempActual = {
-      Mensaje: '',
-      Modo: '',
+      Message: '',
+      Mode: '',
       Pid: '',
-      Nombre: '',
-      Descripcion: '',
-      Valor: 0,
-      Minimo: 0,
-      Maximo: 0,
-      Unidad: '',
-      Fecha: new Date()
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
     };
     flujoAireActual = {
-      Mensaje: '',
-      Modo: '',
+      Message: '',
+      Mode: '',
       Pid: '',
-      Nombre: '',
-      Descripcion: '',
-      Valor: 0,
-      Minimo: 0,
-      Maximo: 0,
-      Unidad: '',
-      Fecha: new Date()
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
     };
     //throttlepos
     throttleposActual = {
-      Mensaje: '',
-      Modo: '',
+      Message: '',
+      Mode: '',
       Pid: '',
-      Nombre: '',
-      Descripcion: '',
-      Valor: 0,
-      Minimo: 0,
-      Maximo: 0,
-      Unidad: '',
-      Fecha: new Date()
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
     };
     reader: Observable<any>;
     
@@ -85,64 +85,64 @@ export class ComunicacionService{
         private bluetoothSerial: BluetoothSerial
     ){
       this.velocidadActual = {
-        Mensaje: '',
-        Modo: '',
+        Message: '',
+        Mode: '',
         Pid: '',
-        Nombre: '',
-        Descripcion: '',
-        Valor: 0,
-        Minimo: 0,
-        Maximo: 0,
-        Unidad: '',
-        Fecha: new Date()
+        Name: '',
+        Description: '',
+        Value: 0,
+        Minima: 0,
+        Maxima: 0,
+        Unit: '',
+        Date: new Date()
       };
       this.rpmActual = {
-        Mensaje: '',
-        Modo: '',
+        Message: '',
+        Mode: '',
         Pid: '',
-        Nombre: '',
-        Descripcion: '',
-        Valor: 0,
-        Minimo: 0,
-        Maximo: 0,
-        Unidad: '',
-        Fecha: new Date()
+        Name: '',
+        Description: '',
+        Value: 0,
+        Minima: 0,
+        Maxima: 0,
+        Unit: '',
+        Date: new Date()
       };
       this.tempActual = {
-        Mensaje: '',
-        Modo: '',
+        Message: '',
+        Mode: '',
         Pid: '',
-        Nombre: '',
-        Descripcion: '',
-        Valor: 0,
-        Minimo: 0,
-        Maximo: 0,
-        Unidad: '',
-        Fecha: new Date()
+        Name: '',
+        Description: '',
+        Value: 0,
+        Minima: 0,
+        Maxima: 0,
+        Unit: '',
+        Date: new Date()
       };
       this.flujoAireActual = {
-        Mensaje: '',
-        Modo: '',
+        Message: '',
+        Mode: '',
         Pid: '',
-        Nombre: '',
-        Descripcion: '',
-        Valor: 0,
-        Minimo: 0,
-        Maximo: 0,
-        Unidad: '',
-        Fecha: new Date()
+        Name: '',
+        Description: '',
+        Value: 0,
+        Minima: 0,
+        Maxima: 0,
+        Unit: '',
+        Date: new Date()
       };
       this.throttleposActual = {
-        Mensaje: '',
-        Modo: '',
+        Message: '',
+        Mode: '',
         Pid: '',
-        Nombre: '',
-        Descripcion: '',
-        Valor: 0,
-        Minimo: 0,
-        Maximo: 0,
-        Unidad: '',
-        Fecha: new Date()
+        Name: '',
+        Description: '',
+        Value: 0,
+        Minima: 0,
+        Maxima: 0,
+        Unit: '',
+        Date: new Date()
       };
     }
     porocesarAlertaSimple(valor, nombre){
@@ -588,16 +588,16 @@ export class ComunicacionService{
                   if (reply.name == 'vss') {
                     reply.value = this.convertSpeed(valueArray[2]);
                     this.velocidadActual = {
-                      Mensaje: hexString,
-                      Modo: reply.mode,
+                      Message: hexString,
+                      Mode: reply.mode,
                       Pid: reply.pid,
-                      Nombre: reply.name,
-                      Descripcion: reply.description,
-                      Valor: reply.value,
-                      Minimo: reply.min,
-                      Maximo: reply.max,
-                      Unidad: reply.unit,
-                      Fecha: new Date()
+                      Name: reply.name,
+                      Description: reply.description,
+                      Value: reply.value,
+                      Minima: reply.min,
+                      Maxima: reply.max,
+                      Unit: reply.unit,
+                      Date: new Date()
                     };
                   }
                   if (reply.name == "dtcfrzf") {
@@ -606,16 +606,16 @@ export class ComunicacionService{
                   if (reply.name == "temp") {
                     reply.value = this.convertTemp(valueArray[2]);
                     this.tempActual = {
-                      Mensaje: hexString,
-                      Modo: reply.mode,
+                     Message: hexString,
+                      Mode: reply.mode,
                       Pid: reply.pid,
-                      Nombre: reply.name,
-                      Descripcion: reply.description,
-                      Valor: reply.value,
-                      Minimo: reply.min,
-                      Maximo: reply.max,
-                      Unidad: reply.unit,
-                      Fecha: new Date()
+                      Name: reply.name,
+                      Description: reply.description,
+                      Value: reply.value,
+                      Minima: reply.min,
+                      Maxima: reply.max,
+                      Unit: reply.unit,
+                      Date: new Date()
                     };
                   }
                   if (reply.name == "load_pct") {
@@ -648,16 +648,16 @@ export class ComunicacionService{
                   if (reply.name == "throttlepos") {
                     reply.value = this.convertThrottlePos(valueArray[2]);
                     this.throttleposActual = {
-                      Mensaje: hexString,
-                      Modo: reply.mode,
+                     Message: hexString,
+                      Mode: reply.mode,
                       Pid: reply.pid,
-                      Nombre: reply.name,
-                      Descripcion: reply.description,
-                      Valor: reply.value,
-                      Minimo: reply.min,
-                      Maximo: reply.max,
-                      Unidad: reply.unit,
-                      Fecha: new Date()
+                      Name: reply.name,
+                      Description: reply.description,
+                      Value: reply.value,
+                      Minima: reply.min,
+                      Maxima: reply.max,
+                      Unit: reply.unit,
+                      Date: new Date()
                     };
                   }
                   if (reply.name == "air_stat") {
@@ -789,31 +789,31 @@ export class ComunicacionService{
                   if (reply.name == "rpm") {
                     reply.value = this.convertRPM(valueArray[2], valueArray[3]);
                     this.rpmActual = {
-                      Mensaje: hexString,
-                      Modo: reply.mode,
+                     Message: hexString,
+                      Mode: reply.mode,
                       Pid: reply.pid,
-                      Nombre: reply.name,
-                      Descripcion: reply.description,
-                      Valor: reply.value,
-                      Minimo: reply.min,
-                      Maximo: reply.max,
-                      Unidad: reply.unit,
-                      Fecha: new Date()
+                      Name: reply.name,
+                      Description: reply.description,
+                      Value: reply.value,
+                      Minima: reply.min,
+                      Maxima: reply.max,
+                      Unit: reply.unit,
+                      Date: new Date()
                     };
                   }
                   if (reply.name == "maf") {
                     reply.value = this.convertAirFlowRate(valueArray[2], valueArray[3]);
                     this.flujoAireActual = {
-                      Mensaje: hexString,
-                      Modo: reply.mode,
+                     Message: hexString,
+                      Mode: reply.mode,
                       Pid: reply.pid,
-                      Nombre: reply.name,
-                      Descripcion: reply.description,
-                      Valor: reply.value,
-                      Minimo: reply.min,
-                      Maximo: reply.max,
-                      Unidad: reply.unit,
-                      Fecha: new Date()
+                      Name: reply.name,
+                      Description: reply.description,
+                      Value: reply.value,
+                      Minima: reply.min,
+                      Maxima: reply.max,
+                      Unit: reply.unit,
+                      Date: new Date()
                     };
                   }
                   if (reply.name == "runtm") {
@@ -991,7 +991,7 @@ export class ComunicacionService{
        * bluetooth.
        * @param message Es el texto que se desea enviar.
        * @returns {Observable<any>} Regresa el texto que llegue vía seria a través de la conexión
-       * bluetooth al dispositivo, en caso de no existir una conexión regresa un mensaje indicando que:
+       * bluetooth al dispositivo, en caso de no existir una conexión regresa un Message indicando que:
        * _No estas conectado a ningún dispositivo bluetooth_.
        */
       public dataInOut(message: string): Observable<any> {
@@ -1033,8 +1033,8 @@ export class ComunicacionService{
         }, 1000);
       }
       /**
-       * Presenta un cuadro de mensaje.
-       * @param {string} text Mensaje a mostrar.
+       * Presenta un cuadro de Message.
+       * @param {string} text Message a mostrar.
        */
       private presentToast(text: string) {
         let toast = this.toastCtrl.create({
@@ -1043,7 +1043,7 @@ export class ComunicacionService{
         });
         toast.present();
       }
-      //manejo de los pids y mensajes
+      //manejo de los pids y Messages
       
      checkHex(n){
         return/^[0-9A-Fa-f]{1,64}$/.test(n);

@@ -9,7 +9,7 @@ import { interval } from 'rxjs/observable/interval';
 import { delay } from 'rxjs/operators';
 
 //servicio
-import { ComunicacionService } from '../../app/Servicios/ComunicacionService';
+import { CommunicationService } from '../../app/Service/CommunicationService';
 
 /**
  * Generated class for the SkinDigitalDosPage page.
@@ -46,72 +46,72 @@ export class SkinDigitalDosPage {
   estiloAlertaTemperatura: any;
   //nuevas variables de objetos completos
   objVelocidadActual = {
-    Mensaje: '',
-    Modo: '',
+    Message: '',
+    Mode: '',
     Pid: '',
-    Nombre: '',
-    Descripcion: '',
-    Valor: 0,
-    Minimo: 0,
-    Maximo: 0,
-    Unidad: '',
-    Fecha: new Date()
+    Name: '',
+    Description: '',
+    Value: 0,
+    Minima: 0,
+    Maxima: 0,
+    Unit: '',
+    Date: new Date()
   };
   objRpmActual = {
-    Mensaje: '',
-    Modo: '',
+    Message: '',
+    Mode: '',
     Pid: '',
-    Nombre: '',
-    Descripcion: '',
-    Valor: 0,
-    Minimo: 0,
-    Maximo: 0,
-    Unidad: '',
-    Fecha: new Date()
+    Name: '',
+    Description: '',
+    Value: 0,
+    Minima: 0,
+    Maxima: 0,
+    Unit: '',
+    Date: new Date()
   };
   objTempActual = {
-    Mensaje: '',
-    Modo: '',
+    Message: '',
+    Mode: '',
     Pid: '',
-    Nombre: '',
-    Descripcion: '',
-    Valor: 0,
-    Minimo: 0,
-    Maximo: 0,
-    Unidad: '',
-    Fecha: new Date()
+    Name: '',
+    Description: '',
+    Value: 0,
+    Minima: 0,
+    Maxima: 0,
+    Unit: '',
+    Date: new Date()
   };
   objFlujoAireActual = {
-    Mensaje: '',
-    Modo: '',
+    Message: '',
+    Mode: '',
     Pid: '',
-    Nombre: '',
-    Descripcion: '',
-    Valor: 0,
-    Minimo: 0,
-    Maximo: 0,
-    Unidad: '',
-    Fecha: new Date()
+    Name: '',
+    Description: '',
+    Value: 0,
+    Minima: 0,
+    Maxima: 0,
+    Unit: '',
+    Date: new Date()
   };
   //throttlepos
   objThrottleposActual = {
-    Mensaje: '',
-    Modo: '',
+    Message: '',
+    Mode: '',
     Pid: '',
-    Nombre: '',
-    Descripcion: '',
-    Valor: 0,
-    Minimo: 0,
-    Maximo: 0,
-    Unidad: '',
-    Fecha: new Date()
+    Name: '',
+    Description: '',
+    Value: 0,
+    Minima: 0,
+    Maxima: 0,
+    Unit: '',
+    Date: new Date()
   };
 
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams,
     private bluetoothSerial: BluetoothSerial,
-    public blueService: ComunicacionService,
+    public blueService: CommunicationService,
     private platform: Platform
   ) {
     this.estaConectado = navParams.get('estaConectado');
@@ -133,65 +133,65 @@ export class SkinDigitalDosPage {
     this.throttleposActual = 0;
     //seteo de los objetos
     this.objVelocidadActual = {
-      Mensaje: '',
-      Modo: '',
+      Message: '',
+      Mode: '',
       Pid: '',
-      Nombre: '',
-      Descripcion: '',
-      Valor: 0,
-      Minimo: 0,
-      Maximo: 0,
-      Unidad: '',
-      Fecha: new Date()
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
     };
     this.objRpmActual = {
-      Mensaje: '',
-      Modo: '',
+      Message: '',
+      Mode: '',
       Pid: '',
-      Nombre: '',
-      Descripcion: '',
-      Valor: 0,
-      Minimo: 0,
-      Maximo: 0,
-      Unidad: '',
-      Fecha: new Date()
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
     };
     this.objTempActual = {
-      Mensaje: '',
-      Modo: '',
+      Message: '',
+      Mode: '',
       Pid: '',
-      Nombre: '',
-      Descripcion: '',
-      Valor: 0,
-      Minimo: 0,
-      Maximo: 0,
-      Unidad: '',
-      Fecha: new Date()
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
     };
     this.objFlujoAireActual = {
-      Mensaje: '',
-      Modo: '',
+      Message: '',
+      Mode: '',
       Pid: '',
-      Nombre: '',
-      Descripcion: '',
-      Valor: 0,
-      Minimo: 0,
-      Maximo: 0,
-      Unidad: '',
-      Fecha: new Date()
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
     };
     //throttlepos
     this.objThrottleposActual = {
-      Mensaje: '',
-      Modo: '',
+      Message: '',
+      Mode: '',
       Pid: '',
-      Nombre: '',
-      Descripcion: '',
-      Valor: 0,
-      Minimo: 0,
-      Maximo: 0,
-      Unidad: '',
-      Fecha: new Date()
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
     };
 
     this.platform.ready().then(() => {
@@ -234,7 +234,7 @@ export class SkinDigitalDosPage {
           //var obj = this.blueService.parseObdCommand(data);
           this.blueService.parseObdCommand(data);
           this.objVelocidadActual = this.blueService.velocidadActual;
-          this.velocidadActual = parseInt(this.blueService.velocidadActual.Valor.toString());
+          this.velocidadActual = parseInt(this.blueService.velocidadActual.Value.toString());
           this.estiloAlertaVelocidad = this.blueService.porocesarAlertaSimple(this.velocidadActual, "vss");
           
         }
@@ -257,7 +257,7 @@ export class SkinDigitalDosPage {
           //var obj = this.blueService.parseObdCommand(data);
           this.blueService.parseObdCommand(data);
           this.objRpmActual = this.blueService.rpmActual;
-          this.rpmActual = parseInt(this.blueService.rpmActual.Valor.toString());
+          this.rpmActual = parseInt(this.blueService.rpmActual.Value.toString());
         }
         if (entrada != ">") {
           if (entrada != "") {
@@ -278,7 +278,7 @@ export class SkinDigitalDosPage {
           //var obj = this.blueService.parseObdCommand(data);
           this.blueService.parseObdCommand(data);
           this.objTempActual = this.blueService.tempActual;
-          this.temperaturaActual = parseInt(this.blueService.tempActual.Valor.toString());
+          this.temperaturaActual = parseInt(this.blueService.tempActual.Value.toString());
           this.estiloAlertaTemperatura = this.blueService.porocesarAlertaSimple(this.temperaturaActual, "temp");
         }
         if (entrada != ">") {
@@ -300,7 +300,7 @@ export class SkinDigitalDosPage {
           //var obj = this.blueService.parseObdCommand(data);
           this.blueService.parseObdCommand(data);
           this.objFlujoAireActual = this.blueService.flujoAireActual;
-          this.flujoAireActual = parseInt(this.blueService.flujoAireActual.Valor.toString());
+          this.flujoAireActual = parseInt(this.blueService.flujoAireActual.Value.toString());
         }
         if (entrada != ">") {
           if (entrada != "") {
@@ -321,7 +321,7 @@ export class SkinDigitalDosPage {
           //var obj = this.blueService.parseObdCommand(data);
           this.blueService.parseObdCommand(data);
           this.objThrottleposActual = this.blueService.throttleposActual;
-          this.throttleposActual = parseInt(this.blueService.throttleposActual.Valor.toString());
+          this.throttleposActual = parseInt(this.blueService.throttleposActual.Value.toString());
         }
         if (entrada != ">") {
           if (entrada != "") {

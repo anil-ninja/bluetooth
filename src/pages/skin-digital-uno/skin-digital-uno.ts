@@ -9,7 +9,7 @@ import { interval } from 'rxjs/observable/interval';
 import { delay } from 'rxjs/operators';
 
 //servicio
-import { ComunicacionService } from '../../app/Servicios/ComunicacionService';
+import { CommunicationService } from '../../app/Service/CommunicationService';
 
 /**
  * Generated class for the SkinDigitalUnoPage page.
@@ -43,65 +43,65 @@ export class SkinDigitalUnoPage {
   intervalThrottlepos: any;
   //nuevas variables de objetos completos
   objVelocidadActual = {
-    Mensaje: '',
-    Modo: '',
+    Message: '',
+    Mode: '',
     Pid: '',
-    Nombre: '',
-    Descripcion: '',
-    Valor: 0,
-    Minimo: 0,
-    Maximo: 0,
-    Unidad: '',
-    Fecha: new Date()
+    Name: '',
+    Description: '',
+    Value: 0,
+    Minima: 0,
+    Maxima: 0,
+    Unit: '',
+    Date: new Date()
   };
   objRpmActual = {
-    Mensaje: '',
-    Modo: '',
+    Message: '',
+    Mode: '',
     Pid: '',
-    Nombre: '',
-    Descripcion: '',
-    Valor: 0,
-    Minimo: 0,
-    Maximo: 0,
-    Unidad: '',
-    Fecha: new Date()
+    Name: '',
+    Description: '',
+    Value: 0,
+    Minima: 0,
+    Maxima: 0,
+    Unit: '',
+    Date: new Date()
   };
   objTempActual = {
-    Mensaje: '',
-    Modo: '',
+    Message: '',
+    Mode: '',
     Pid: '',
-    Nombre: '',
-    Descripcion: '',
-    Valor: 0,
-    Minimo: 0,
-    Maximo: 0,
-    Unidad: '',
-    Fecha: new Date()
+    Name: '',
+    Description: '',
+    Value: 0,
+    Minima: 0,
+    Maxima: 0,
+    Unit: '',
+    Date: new Date()
   };
   objFlujoAireActual = {
-    Mensaje: '',
-    Modo: '',
+    Message: '',
+    Mode: '',
     Pid: '',
-    Nombre: '',
-    Descripcion: '',
-    Valor: 0,
-    Minimo: 0,
-    Maximo: 0,
-    Unidad: '',
-    Fecha: new Date()
+    Name: '',
+    Description: '',
+    Value: 0,
+    Minima: 0,
+    Maxima: 0,
+    Unit: '',
+    Date: new Date()
   };
   //throttlepos
   objThrottleposActual = {
-    Mensaje: '',
-    Modo: '',
+    Message: '',
+    Mode: '',
     Pid: '',
-    Nombre: '',
-    Descripcion: '',
-    Valor: 0,
-    Minimo: 0,
-    Maximo: 0,
-    Unidad: '',
-    Fecha: new Date()
+    Name: '',
+    Description: '',
+    Value: 0,
+    Minima: 0,
+    Maxima: 0,
+    Unit: '',
+    Date: new Date()
   };
 
 
@@ -111,7 +111,7 @@ export class SkinDigitalUnoPage {
     public navCtrl: NavController, 
     public navParams: NavParams,
     private bluetoothSerial: BluetoothSerial,
-    public blueService: ComunicacionService,
+    public blueService: CommunicationService,
     private platform: Platform
   ) {
     this.estaConectado = navParams.get('estaConectado');
@@ -130,65 +130,65 @@ export class SkinDigitalUnoPage {
     this.throttleposActual = 0;
     //seteo de los objetos
     this.objVelocidadActual = {
-      Mensaje: '',
-      Modo: '',
+      Message: '',
+      Mode: '',
       Pid: '',
-      Nombre: '',
-      Descripcion: '',
-      Valor: 0,
-      Minimo: 0,
-      Maximo: 0,
-      Unidad: '',
-      Fecha: new Date()
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
     };
     this.objRpmActual = {
-      Mensaje: '',
-      Modo: '',
+      Message: '',
+      Mode: '',
       Pid: '',
-      Nombre: '',
-      Descripcion: '',
-      Valor: 0,
-      Minimo: 0,
-      Maximo: 0,
-      Unidad: '',
-      Fecha: new Date()
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
     };
     this.objTempActual = {
-      Mensaje: '',
-      Modo: '',
+      Message: '',
+      Mode: '',
       Pid: '',
-      Nombre: '',
-      Descripcion: '',
-      Valor: 0,
-      Minimo: 0,
-      Maximo: 0,
-      Unidad: '',
-      Fecha: new Date()
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
     };
     this.objFlujoAireActual = {
-      Mensaje: '',
-      Modo: '',
+      Message: '',
+      Mode: '',
       Pid: '',
-      Nombre: '',
-      Descripcion: '',
-      Valor: 0,
-      Minimo: 0,
-      Maximo: 0,
-      Unidad: '',
-      Fecha: new Date()
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
     };
     //throttlepos
     this.objThrottleposActual = {
-      Mensaje: '',
-      Modo: '',
+      Message: '',
+      Mode: '',
       Pid: '',
-      Nombre: '',
-      Descripcion: '',
-      Valor: 0,
-      Minimo: 0,
-      Maximo: 0,
-      Unidad: '',
-      Fecha: new Date()
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
     };
 
     this.platform.ready().then(() => {
@@ -224,7 +224,7 @@ export class SkinDigitalUnoPage {
       if (data && data.length > 0) {
         //var obj = this.blueService.parseObdCommand(data);
         this.blueService.parseObdCommand(data);
-        this.velocidadActual = this.blueService.velocidadActual.Valor;
+        this.velocidadActual = this.blueService.velocidadActual.Value;
       }
       if (entrada != ">") {
         if (entrada != "") {
@@ -253,7 +253,7 @@ export class SkinDigitalUnoPage {
           //var obj = this.blueService.parseObdCommand(data);
           this.blueService.parseObdCommand(data);
           this.objVelocidadActual = this.blueService.velocidadActual;
-          this.velocidadActual = parseInt(this.blueService.velocidadActual.Valor.toString());
+          this.velocidadActual = parseInt(this.blueService.velocidadActual.Value.toString());
         }
         if (entrada != ">") {
           if (entrada != "") {
@@ -274,7 +274,7 @@ export class SkinDigitalUnoPage {
           //var obj = this.blueService.parseObdCommand(data);
           this.blueService.parseObdCommand(data);
           this.objRpmActual = this.blueService.rpmActual;
-          this.rpmActual = parseInt(this.blueService.rpmActual.Valor.toString());
+          this.rpmActual = parseInt(this.blueService.rpmActual.Value.toString());
         }
         if (entrada != ">") {
           if (entrada != "") {
@@ -295,7 +295,7 @@ export class SkinDigitalUnoPage {
           //var obj = this.blueService.parseObdCommand(data);
           this.blueService.parseObdCommand(data);
           this.objTempActual = this.blueService.tempActual;
-          this.temperaturaActual = parseInt(this.blueService.tempActual.Valor.toString());
+          this.temperaturaActual = parseInt(this.blueService.tempActual.Value.toString());
         }
         if (entrada != ">") {
           if (entrada != "") {
@@ -316,7 +316,7 @@ export class SkinDigitalUnoPage {
           //var obj = this.blueService.parseObdCommand(data);
           this.blueService.parseObdCommand(data);
           this.objFlujoAireActual = this.blueService.flujoAireActual;
-          this.flujoAireActual = parseInt(this.blueService.flujoAireActual.Valor.toString());
+          this.flujoAireActual = parseInt(this.blueService.flujoAireActual.Value.toString());
         }
         if (entrada != ">") {
           if (entrada != "") {
@@ -337,7 +337,7 @@ export class SkinDigitalUnoPage {
           //var obj = this.blueService.parseObdCommand(data);
           this.blueService.parseObdCommand(data);
           this.objThrottleposActual = this.blueService.throttleposActual;
-          this.throttleposActual = parseInt(this.blueService.throttleposActual.Valor.toString());
+          this.throttleposActual = parseInt(this.blueService.throttleposActual.Value.toString());
         }
         if (entrada != ">") {
           if (entrada != "") {
@@ -361,7 +361,7 @@ export class SkinDigitalUnoPage {
         if (data && data.length > 0) {
           //var obj = this.blueService.parseObdCommand(data);
           this.blueService.parseObdCommand(data);
-          this.velocidadActual = this.blueService.velocidadActual.Valor;
+          this.velocidadActual = this.blueService.velocidadActual.Value;
         }
         if (entrada != ">") {
           if (entrada != "") {
@@ -380,7 +380,7 @@ export class SkinDigitalUnoPage {
         if (data && data.length > 0) {
           //var obj = this.blueService.parseObdCommand(data);
           this.blueService.parseObdCommand(data);
-          this.rpmActual = this.blueService.rpmActual.Valor;
+          this.rpmActual = this.blueService.rpmActual.Value;
         }
         if (entrada != ">") {
           if (entrada != "") {
@@ -399,7 +399,7 @@ export class SkinDigitalUnoPage {
         if (data && data.length > 0) {
           //var obj = this.blueService.parseObdCommand(data);
           this.blueService.parseObdCommand(data);
-          this.temperaturaActual = this.blueService.tempActual.Valor;
+          this.temperaturaActual = this.blueService.tempActual.Value;
         }
         if (entrada != ">") {
           if (entrada != "") {
@@ -431,7 +431,7 @@ export class SkinDigitalUnoPage {
               Unidad: obj.unit,
               Fecha: new Date()
             };
-            this.temperaturaActual = retorno.Valor;
+            this.temperaturaActual = retorno.Value;
           }
           
         }
@@ -447,7 +447,7 @@ export class SkinDigitalUnoPage {
     
     Observable.interval(600).subscribe(() => {
       this.enviarMensajesI(smsR);
-      this.flujoAireActual = = this.entidadConsultar.Valor;
+      this.flujoAireActual = = this.entidadConsultar.Value;
     });
     */
   }
@@ -462,19 +462,19 @@ export class SkinDigitalUnoPage {
         if (obj.name && obj.name.length > 0) {
           //this.dataSalida.push(entidad);
           var retorno = {
-            Mensaje: sms,
-            Modo: obj.mode,
+            Message: sms,
+            Mode: obj.mode,
             Pid: obj.pid,
-            Nombre: obj.name,
-            Descripcion: obj.description,
-            Valor: obj.value,
-            Minimo: obj.min,
-            Maximo: obj.max,
-            Unidad: obj.unit,
-            Fecha: new Date()
+            Name: obj.name,
+            Description: obj.description,
+            Value: obj.value,
+            Minima: obj.min,
+            Maxima: obj.max,
+            Unit: obj.unit,
+            Date: new Date()
           };
           return retorno;
-          //this.velocidadActual = entidad.Valor;
+          //this.velocidadActual = entidad.Value;
         }
       }
       //this.presentToast('variable salida: ' + entrada);
@@ -518,18 +518,18 @@ export class SkinDigitalUnoPage {
         if (objT.name && objT.name.length > 0) {
           //this.dataSalida.push(entidad);
           var entidadT = {
-            Mensaje: sms,
-            Modo: objT.mode,
+            Message: sms,
+            Mode: objT.mode,
             Pid: objT.pid,
-            Nombre: objT.name,
-            Descripcion: objT.description,
-            Valor: objT.value,
-            Minimo: objT.min,
-            Maximo: objT.max,
-            Unidad: objT.unit,
-            Fecha: new Date()
+            Name: objT.name,
+            Description: objT.description,
+            Value: objT.value,
+            Minima: objT.min,
+            Maxima: objT.max,
+            Unit: objT.unit,
+            Date: new Date()
           };
-          this.temperaturaActual = entidadT.Valor;
+          this.temperaturaActual = entidadT.Value;
         }
       }
       //this.presentToast('variable salida: ' + entrada);
