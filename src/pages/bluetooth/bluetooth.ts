@@ -345,7 +345,7 @@ export class BluetoothPage {
       this.connection = this.bluetoothSerial.connect(id).subscribe((data: Observable<any>) => {
         //lo vamos a comentar por mientras
         this.enviarmessages();
-        this.setConnectOBD();
+        this.initiateIntervals();
       }, fail => {
         console.log(`[3] Error conexión: ${JSON.stringify(fail)}`);
         reject("Can not connect to this device");
@@ -403,16 +403,21 @@ export class BluetoothPage {
   }
 
   setConnectOBD() {
-    var btWrite = this.bluetoothSerial;
-    btWrite.write('ATZ').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});
-    btWrite.write('ATL0').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//Turns off extra line feed and carriage return
-    btWrite.write('ATS0').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//This disables spaces in in output, which is faster!
-    btWrite.write('ATH0').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//Turns off headers and checksum to be sent.
-    btWrite.write('ATE0').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//Turns off echo.
-    btWrite.write('ATAT2').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//Turn adaptive timing to 2. This is an aggressive learn curve for adjusting the timeout. Will make huge difference on slow systems.
-    //Set timeout to 10 * 4 = 40msec, allows +20 queries per second. This is the maximum wait-time. ATAT will decide if it should wait shorter or not.
-    //btWrite('ATST0A');
-    btWrite.write('ATSP0').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//Set the protocol to automatic.
+    //var btWrite = this.bluetoothSerial;
+    // btWrite.write('ATZ').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});
+    // btWrite.write('010C\r').then(o=>{console.log("protocol rpm r", o);}).catch(e=>{console.log("can not set protocol", e);});
+    // btWrite.write('010C\r')
+    // btWrite.write('010C').then(o=>{console.log("protocol rpm", o);}).catch(e=>{console.log("can not set protocol", e);});
+    // btWrite.write('010d').then(o=>{console.log("protocol current velocity", o);}).catch(e=>{console.log("can not set protocol", e);});
+    // btWrite.write('020d').then(o=>{console.log("protocol freeze velo", o);}).catch(e=>{console.log("can not set protocol", e);});
+    // btWrite.write('ATL0').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//Turns off extra line feed and carriage return
+    // btWrite.write('ATS0').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//This disables spaces in in output, which is faster!
+    // btWrite.write('ATH0').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//Turns off headers and checksum to be sent.
+    // btWrite.write('ATE0').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//Turns off echo.
+    // btWrite.write('ATAT2').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//Turn adaptive timing to 2. This is an aggressive learn curve for adjusting the timeout. Will make huge difference on slow systems.
+    // //Set timeout to 10 * 4 = 40msec, allows +20 queries per second. This is the maximum wait-time. ATAT will decide if it should wait shorter or not.
+    // //btWrite('ATST0A');
+    // btWrite.write('ATSP0').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//Set the protocol to automatic.
     this.initiateIntervals();
     //Event connected
     //this.btEventEmit('connected','');
@@ -436,119 +441,129 @@ export class BluetoothPage {
 
   initiateIntervals() {
     //this.bluetoothSerial.write("ATSP0").then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);})
-    var smsVel = "010D\r";
-    var smsTemp = "0105\r";
+    //var smsVel = "010D\r";
+    // var smsTemp = "0105\r";
     var smsRpm = "010C\r";
-    var smsFlujo = "0110\r";
-    var smsThr = "0111\r";
+    // var smsFlujo = "0110\r";
+    // var smsThr = "0111\r";
     console.log("intervl init");
 
-
-
-    this.interval = setInterval(() => {
-      //this.checkUpdate();
-      this.conexionMensajes = this.blueService.dataInOut(smsVel).subscribe(data => {
-        let entrada = data.substr(0, data.length - 1);
-        console.log('data: velocity', data);
-        if (data && data.length > 0) {
+    this.bluetoothSerial.write(smsRpm).then(data=>{
+      console.log("protocol current velocity", data);
+      let entrada = data.substr(0, data.length - 1);
+      if (data && data.length > 0) {
           //var obj = this.blueService.parseObdCommand(data);
-          this.blueService.parseObdCommand(data);
-          this.objVelocidadActual = this.blueService.velocidadActual;
-          this.velocidadActual = parseInt(this.blueService.velocidadActual.Value.toString());
-        }
-        if (entrada != ">") {
-          if (entrada != "") {
-            console.log(`Entrada: ${entrada}`);
-          }
-        } else {
-          this.conexionMensajes.unsubscribe();
-        }
-      });
-    }, 500);
+        this.blueService.parseObdCommand(data);
+        this.objRpmActual = this.blueService.rpmActual;
+        this.rpmActual = parseInt(this.blueService.rpmActual.Value.toString());
+        console.log("rpm actual : ", this.rpmActual );
+      }
+    }).catch(e=>{console.log("can not set protocol", e);});
 
-    this.intervalRpm = setInterval(() => {
-      //this.checkUpdate();
-      this.conexionMensajesR = this.blueService.dataInOut(smsRpm).subscribe(data => {
-        let entrada = data.substr(0, data.length - 1);
-        console.log('data: rpm', data);
-        if (data && data.length > 0) {
-          //var obj = this.blueService.parseObdCommand(data);
-          this.blueService.parseObdCommand(data);
-          this.objRpmActual = this.blueService.rpmActual;
-          this.rpmActual = parseInt(this.blueService.rpmActual.Value.toString());
-        }
-        if (entrada != ">") {
-          if (entrada != "") {
-            console.log(`Entrada: ${entrada}`);
-          }
-        } else {
-          this.conexionMensajesR.unsubscribe();
-        }
-      });
-    }, 550);
+    // this.interval = setInterval(() => {
+    //   //this.checkUpdate();
+    //   this.conexionMensajes = this.blueService.dataInOut(smsVel).subscribe(data => {
+    //     let entrada = data.substr(0, data.length - 1);
+    //     console.log('data: velocity', data);
+    //     if (data && data.length > 0) {
+    //       //var obj = this.blueService.parseObdCommand(data);
+    //       this.blueService.parseObdCommand(data);
+    //       this.objVelocidadActual = this.blueService.velocidadActual;
+    //       this.velocidadActual = parseInt(this.blueService.velocidadActual.Value.toString());
+    //     }
+    //     if (entrada != ">") {
+    //       if (entrada != "") {
+    //         console.log(`Entrada: ${entrada}`);
+    //       }
+    //     } else {
+    //       this.conexionMensajes.unsubscribe();
+    //     }
+    //   });
+    // }, 500);
 
-    this.intervalTmp = setInterval(() => {
-      //this.checkUpdate();
-      this.conexionMensajesT = this.blueService.dataInOut(smsTemp).subscribe(data => {
-        let entrada = data.substr(0, data.length - 1);
-        console.log('data: temparature', data);
-        if (data && data.length > 0) {
-          //var obj = this.blueService.parseObdCommand(data);
-          this.blueService.parseObdCommand(data);
-          this.objTempActual = this.blueService.tempActual;
-          this.temperaturaActual = parseInt(this.blueService.tempActual.Value.toString());
-        }
-        if (entrada != ">") {
-          if (entrada != "") {
-            console.log(`Entrada: ${entrada}`);
-          }
-        } else {
-          this.conexionMensajesT.unsubscribe();
-        }
-      });
-    }, 650);
+    // this.intervalRpm = setInterval(() => {
+    //   //this.checkUpdate();
+    //   this.conexionMensajesR = this.blueService.dataInOut(smsRpm).subscribe(data => {
+    //     let entrada = data.substr(0, data.length - 1);
+    //     console.log('data: rpm', data);
+    //     if (data && data.length > 0) {
+    //       //var obj = this.blueService.parseObdCommand(data);
+    //       this.blueService.parseObdCommand(data);
+    //       this.objRpmActual = this.blueService.rpmActual;
+    //       this.rpmActual = parseInt(this.blueService.rpmActual.Value.toString());
+    //     }
+    //     // if (entrada != ">") {
+    //     //   if (entrada != "") {
+    //     //     console.log(`Entrada: ${entrada}`);
+    //     //   }
+    //     // } else {
+    //     //   this.conexionMensajesR.unsubscribe();
+    //     // }
+    //   });
+    // }, 550);
 
-    this.intervalFlujo = setInterval(() => {
-      //this.checkUpdate();
-      this.conexionMensajesF = this.blueService.dataInOut(smsFlujo).subscribe(data => {
-        let entrada = data.substr(0, data.length - 1);
-        console.log('data: fluid', data);
-        if (data && data.length > 0) {
-          //var obj = this.blueService.parseObdCommand(data);
-          this.blueService.parseObdCommand(data);
-          this.objFlujoAireActual = this.blueService.flujoAireActual;
-          this.flujoAireActual = parseInt(this.blueService.flujoAireActual.Value.toString());
-        }
-        if (entrada != ">") {
-          if (entrada != "") {
-            console.log(`Entrada: ${entrada}`);
-          }
-        } else {
-          this.conexionMensajesF.unsubscribe();
-        }
-      });
-    }, 650);
+    // this.intervalTmp = setInterval(() => {
+    //   //this.checkUpdate();
+    //   this.conexionMensajesT = this.blueService.dataInOut(smsTemp).subscribe(data => {
+    //     let entrada = data.substr(0, data.length - 1);
+    //     console.log('data: temparature', data);
+    //     if (data && data.length > 0) {
+    //       //var obj = this.blueService.parseObdCommand(data);
+    //       this.blueService.parseObdCommand(data);
+    //       this.objTempActual = this.blueService.tempActual;
+    //       this.temperaturaActual = parseInt(this.blueService.tempActual.Value.toString());
+    //     }
+    //     if (entrada != ">") {
+    //       if (entrada != "") {
+    //         console.log(`Entrada: ${entrada}`);
+    //       }
+    //     } else {
+    //       this.conexionMensajesT.unsubscribe();
+    //     }
+    //   });
+    // }, 650);
 
-    this.intervalThrottlepos = setInterval(() => {
-      //this.checkUpdate();
-      this.conexionMensajesTHR = this.blueService.dataInOut(smsThr).subscribe(data => {
-        let entrada = data.substr(0, data.length - 1);
-        console.log('data: throttle', data);
-        if (data && data.length > 0) {
-          //var obj = this.blueService.parseObdCommand(data);
-          this.blueService.parseObdCommand(data);
-          this.objThrottleposActual = this.blueService.throttleposActual;
-          this.throttleposActual = parseInt(this.blueService.throttleposActual.Value.toString());
-        }
-        if (entrada != ">") {
-          if (entrada != "") {
-            console.log(`Entrada: ${entrada}`);
-          }
-        } else {
-          this.conexionMensajesTHR.unsubscribe();
-        }
-      });
-    }, 650);
+    // this.intervalFlujo = setInterval(() => {
+    //   //this.checkUpdate();
+    //   this.conexionMensajesF = this.blueService.dataInOut(smsFlujo).subscribe(data => {
+    //     let entrada = data.substr(0, data.length - 1);
+    //     console.log('data: fluid', data);
+    //     if (data && data.length > 0) {
+    //       //var obj = this.blueService.parseObdCommand(data);
+    //       this.blueService.parseObdCommand(data);
+    //       this.objFlujoAireActual = this.blueService.flujoAireActual;
+    //       this.flujoAireActual = parseInt(this.blueService.flujoAireActual.Value.toString());
+    //     }
+    //     if (entrada != ">") {
+    //       if (entrada != "") {
+    //         console.log(`Entrada: ${entrada}`);
+    //       }
+    //     } else {
+    //       this.conexionMensajesF.unsubscribe();
+    //     }
+    //   });
+    // }, 650);
+
+    // this.intervalThrottlepos = setInterval(() => {
+    //   //this.checkUpdate();
+    //   this.conexionMensajesTHR = this.blueService.dataInOut(smsThr).subscribe(data => {
+    //     let entrada = data.substr(0, data.length - 1);
+    //     console.log('data: throttle', data);
+    //     if (data && data.length > 0) {
+    //       //var obj = this.blueService.parseObdCommand(data);
+    //       this.blueService.parseObdCommand(data);
+    //       this.objThrottleposActual = this.blueService.throttleposActual;
+    //       this.throttleposActual = parseInt(this.blueService.throttleposActual.Value.toString());
+    //     }
+    //     if (entrada != ">") {
+    //       if (entrada != "") {
+    //         console.log(`Entrada: ${entrada}`);
+    //       }
+    //     } else {
+    //       this.conexionMensajesTHR.unsubscribe();
+    //     }
+    //   });
+    // }, 650);
   }
 
   enviarmessages() {
