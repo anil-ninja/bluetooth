@@ -175,7 +175,7 @@ export class CommunicationService{
       var reply;
       var byteNumber;
       var valueArray; //New object
-  
+      console.log("inside parse command obd", hexString);
       reply = {};
   
       if (hexString === "NO DATA" || hexString === "OK" || hexString === "?" || hexString === "UNABLE TO CONNECT" || hexString === "SEARCHING...") {
@@ -555,7 +555,7 @@ export class CommunicationService{
         var reply;
         var byteNumber;
         var valueArray; //New object
-    
+        console.log("inside parse command", hexString);
         reply = {};
     
         if (hexString === "NO DATA" || hexString === "OK" || hexString === "?" || hexString === "UNABLE TO CONNECT" || hexString === "SEARCHING...") {
@@ -999,7 +999,7 @@ export class CommunicationService{
           this.bluetoothSerial.isConnected().then(isConnected => {
             this.reader = Observable.fromPromise(this.bluetoothSerial.write(message))
               .flatMap(() => {
-                return this.bluetoothSerial.subscribeRawData()
+                return this.bluetoothSerial.subscribeRawData();
               })
               .flatMap(() => {
                 return this.bluetoothSerial.readUntil('\n');   // <= delimitador

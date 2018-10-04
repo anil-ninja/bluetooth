@@ -6,8 +6,11 @@ import { ISubscription } from "rxjs/Subscription";
 //servicio
 import { CommunicationService } from '../../app/Service/CommunicationService';
 //paginas
-import { SeleccionSkinPage } from '../../pages/seleccion-skin/seleccion-skin';
-
+import { concat } from 'rxjs/observable/concat';
+//nuevos
+import { of } from 'rxjs/observable/of';
+import { interval } from 'rxjs/observable/interval';
+import { delay } from 'rxjs/operators';
 
 @Injectable()
 @Component({
@@ -33,7 +36,85 @@ export class BluetoothPage {
   modeRequestDTC = "03";
   modeClearDTC = "04";
   modeVin = "09";
-
+  colorBlue = 'danger';
+  conexionMensajes: ISubscription;
+  conexionMensajesT: ISubscription;
+  conexionMensajesR: ISubscription;
+  conexionMensajesF: ISubscription;
+  conexionMensajesTHR: ISubscription;
+  //variable para mostrar la velocidad
+  velocidadActual: number;
+  temperaturaActual: number;
+  rpmActual: number;
+  flujoAireActual: number;
+  throttleposActual: number;
+  interval: any;
+  intervalRpm: any;
+  intervalTmp: any;
+  intervalFlujo: any;
+  intervalThrottlepos: any;
+  //nuevas variables de objetos completos
+  objVelocidadActual = {
+    Message: '',
+    Mode: '',
+    Pid: '',
+    Name: '',
+    Description: '',
+    Value: 0,
+    Minima: 0,
+    Maxima: 0,
+    Unit: '',
+    Date: new Date()
+  };
+  objRpmActual = {
+    Message: '',
+    Mode: '',
+    Pid: '',
+    Name: '',
+    Description: '',
+    Value: 0,
+    Minima: 0,
+    Maxima: 0,
+    Unit: '',
+    Date: new Date()
+  };
+  objTempActual = {
+    Message: '',
+    Mode: '',
+    Pid: '',
+    Name: '',
+    Description: '',
+    Value: 0,
+    Minima: 0,
+    Maxima: 0,
+    Unit: '',
+    Date: new Date()
+  };
+  objFlujoAireActual = {
+    Message: '',
+    Mode: '',
+    Pid: '',
+    Name: '',
+    Description: '',
+    Value: 0,
+    Minima: 0,
+    Maxima: 0,
+    Unit: '',
+    Date: new Date()
+  };
+  //throttlepos
+  objThrottleposActual = {
+    Message: '',
+    Mode: '',
+    Pid: '',
+    Name: '',
+    Description: '',
+    Value: 0,
+    Minima: 0,
+    Maxima: 0,
+    Unit: '',
+    Date: new Date()
+  };
   constructor(
     private platform: Platform,
     private toastCtrl: ToastController,
@@ -42,21 +123,84 @@ export class BluetoothPage {
     public blueService: CommunicationService,
     public navCtrl: NavController,
   ) { 
-    //contenido del cosntructor
-
-  }
-  start(){
-    //abrir la pagina siguiente a la conexión, cambiar esto despues
-    /*
-    if (this.estaConectado){
-      this.navCtrl.push(SeleccionSkinPage, { usuario: this.estaConectado });
+    if (this.estaConectado)
+    {
+      this.colorBlue = 'secondary';
     }
     else{
-      this.presentToast('No puede seguir, debe conectarse a un dispositivo bluetooth.');
+      this.colorBlue = 'danger';
     }
-    */
-   this.navCtrl.push(SeleccionSkinPage, { estaConectado: this.estaConectado });
+    //inicializacion
+    this.velocidadActual = 0;
+    this.temperaturaActual = 0;
+    this.rpmActual = 0;
+    this.flujoAireActual = 0;
+    this.throttleposActual = 0;
+    //seteo de los objetos
+    this.objVelocidadActual = {
+      Message: '',
+      Mode: '',
+      Pid: '',
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
+    };
+    this.objRpmActual = {
+      Message: '',
+      Mode: '',
+      Pid: '',
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
+    };
+    this.objTempActual = {
+      Message: '',
+      Mode: '',
+      Pid: '',
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
+    };
+    this.objFlujoAireActual = {
+      Message: '',
+      Mode: '',
+      Pid: '',
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
+    };
+    //throttlepos
+    this.objThrottleposActual = {
+      Message: '',
+      Mode: '',
+      Pid: '',
+      Name: '',
+      Description: '',
+      Value: 0,
+      Minima: 0,
+      Maxima: 0,
+      Unit: '',
+      Date: new Date()
+    };
+
   }
+  
   iniciarIntervalo() {
     var sms = "010D";
     Observable.interval(5000).subscribe(() => {
@@ -200,8 +344,8 @@ export class BluetoothPage {
     return new Promise((resolve, reject) => {
       this.connection = this.bluetoothSerial.connect(id).subscribe((data: Observable<any>) => {
         //lo vamos a comentar por mientras
-        //this.enviarmessages();
-        resolve("Connected");
+        this.enviarmessages();
+        this.setConnectOBD();
       }, fail => {
         console.log(`[3] Error conexión: ${JSON.stringify(fail)}`);
         reject("Can not connect to this device");
@@ -225,7 +369,7 @@ export class BluetoothPage {
     //this.presentToast('Enviando message: ' + sms);
     this.connectionMessages =this.blueService.dataInOut(sms).subscribe(data => {
       let entrada = data.substr(0, data.length - 1);
-      //this.presentToast('data:' + data);
+      this.presentToast('data:' + data);
       if (data && data.length > 0) {
         var obj = this.blueService.parseObdCommand(data);
         if (obj.name && obj.name.length > 0) {
@@ -258,57 +402,161 @@ export class BluetoothPage {
     });
   }
 
-  /**
-   * Permite enviar messages de texto vía serial al conectarse por bluetooth.
-   */
+  setConnectOBD() {
+    var btWrite = this.bluetoothSerial;
+    btWrite.write('ATZ').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});
+    btWrite.write('ATL0').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//Turns off extra line feed and carriage return
+    btWrite.write('ATS0').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//This disables spaces in in output, which is faster!
+    btWrite.write('ATH0').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//Turns off headers and checksum to be sent.
+    btWrite.write('ATE0').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//Turns off echo.
+    btWrite.write('ATAT2').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//Turn adaptive timing to 2. This is an aggressive learn curve for adjusting the timeout. Will make huge difference on slow systems.
+    //Set timeout to 10 * 4 = 40msec, allows +20 queries per second. This is the maximum wait-time. ATAT will decide if it should wait shorter or not.
+    //btWrite('ATST0A');
+    btWrite.write('ATSP0').then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);});//Set the protocol to automatic.
+    this.initiateIntervals();
+    //Event connected
+    //this.btEventEmit('connected','');
+    //btConnected=true;
+}
 
-   /*
-  enviarmessages() {
-    var sms = this.message + '\r';
-    this.presentToast('Enviando message: ' + sms);
-    this.connectionMessages = this.dataInOut(sms).subscribe(data => {
-      let entrada = data.substr(0, data.length - 1);
-      //this.presentToast('data:' + data);
-      if (data && data.length > 0) {
-        var obj = this.parseObdCommand(data);
-        if (obj.name && obj.name.length > 0) {
-          //this.dataSalida.push(entidad);
-          var entidad = {
-            Modo: obj.mode,
-            Pid: obj.pid,
-            Nombre: obj.name,
-            Descripcion: obj.description,
-            Valor: obj.value,
-            Minimo: obj.min,
-            Maximo: obj.max,
-            Unidad: obj.unit,
-            Fecha: new Date()
-          };
-          this.dataSalida.push(entidad);
+// public btEventEmit = function (event,text) {
+//     var pdata={};
+//     if (event==='dataReceived') {
+//         if ( text.value === 'NO DATA' || text.name === undefined || text.value === undefined) {
+//             return;
+//         }
+//         //pushGlobalLog('New metric for ' + text.name);
+//         pdata = {ts:Date.now(),name:text.name,value:text.value};
+//         console.log(JSON.stringify(pdata));
+        
+//         //this.initiateIntervals();
+//     }
+//     this.initiateIntervals();
+// };
+
+  initiateIntervals() {
+    //this.bluetoothSerial.write("ATSP0").then(o=>{console.log("protocol", o);}).catch(e=>{console.log("can not set protocol", e);})
+    var smsVel = "010D\r";
+    var smsTemp = "0105\r";
+    var smsRpm = "010C\r";
+    var smsFlujo = "0110\r";
+    var smsThr = "0111\r";
+    console.log("intervl init");
+
+
+
+    this.interval = setInterval(() => {
+      //this.checkUpdate();
+      this.conexionMensajes = this.blueService.dataInOut(smsVel).subscribe(data => {
+        let entrada = data.substr(0, data.length - 1);
+        console.log('data: velocity', data);
+        if (data && data.length > 0) {
+          //var obj = this.blueService.parseObdCommand(data);
+          this.blueService.parseObdCommand(data);
+          this.objVelocidadActual = this.blueService.velocidadActual;
+          this.velocidadActual = parseInt(this.blueService.velocidadActual.Value.toString());
         }
-      }
-      //this.presentToast('variable salida: ' + entrada);
-      if (entrada != ">") {
-        if (entrada != "") {
-          console.log(`Entrada: ${entrada}`);
-          this.presentToast('console log:' + entrada);
+        if (entrada != ">") {
+          if (entrada != "") {
+            console.log(`Entrada: ${entrada}`);
+          }
+        } else {
+          this.conexionMensajes.unsubscribe();
         }
-      } else {
-        this.connectionMessages.unsubscribe();
-      }
-      this.message = "";
-    });
+      });
+    }, 500);
+
+    this.intervalRpm = setInterval(() => {
+      //this.checkUpdate();
+      this.conexionMensajesR = this.blueService.dataInOut(smsRpm).subscribe(data => {
+        let entrada = data.substr(0, data.length - 1);
+        console.log('data: rpm', data);
+        if (data && data.length > 0) {
+          //var obj = this.blueService.parseObdCommand(data);
+          this.blueService.parseObdCommand(data);
+          this.objRpmActual = this.blueService.rpmActual;
+          this.rpmActual = parseInt(this.blueService.rpmActual.Value.toString());
+        }
+        if (entrada != ">") {
+          if (entrada != "") {
+            console.log(`Entrada: ${entrada}`);
+          }
+        } else {
+          this.conexionMensajesR.unsubscribe();
+        }
+      });
+    }, 550);
+
+    this.intervalTmp = setInterval(() => {
+      //this.checkUpdate();
+      this.conexionMensajesT = this.blueService.dataInOut(smsTemp).subscribe(data => {
+        let entrada = data.substr(0, data.length - 1);
+        console.log('data: temparature', data);
+        if (data && data.length > 0) {
+          //var obj = this.blueService.parseObdCommand(data);
+          this.blueService.parseObdCommand(data);
+          this.objTempActual = this.blueService.tempActual;
+          this.temperaturaActual = parseInt(this.blueService.tempActual.Value.toString());
+        }
+        if (entrada != ">") {
+          if (entrada != "") {
+            console.log(`Entrada: ${entrada}`);
+          }
+        } else {
+          this.conexionMensajesT.unsubscribe();
+        }
+      });
+    }, 650);
+
+    this.intervalFlujo = setInterval(() => {
+      //this.checkUpdate();
+      this.conexionMensajesF = this.blueService.dataInOut(smsFlujo).subscribe(data => {
+        let entrada = data.substr(0, data.length - 1);
+        console.log('data: fluid', data);
+        if (data && data.length > 0) {
+          //var obj = this.blueService.parseObdCommand(data);
+          this.blueService.parseObdCommand(data);
+          this.objFlujoAireActual = this.blueService.flujoAireActual;
+          this.flujoAireActual = parseInt(this.blueService.flujoAireActual.Value.toString());
+        }
+        if (entrada != ">") {
+          if (entrada != "") {
+            console.log(`Entrada: ${entrada}`);
+          }
+        } else {
+          this.conexionMensajesF.unsubscribe();
+        }
+      });
+    }, 650);
+
+    this.intervalThrottlepos = setInterval(() => {
+      //this.checkUpdate();
+      this.conexionMensajesTHR = this.blueService.dataInOut(smsThr).subscribe(data => {
+        let entrada = data.substr(0, data.length - 1);
+        console.log('data: throttle', data);
+        if (data && data.length > 0) {
+          //var obj = this.blueService.parseObdCommand(data);
+          this.blueService.parseObdCommand(data);
+          this.objThrottleposActual = this.blueService.throttleposActual;
+          this.throttleposActual = parseInt(this.blueService.throttleposActual.Value.toString());
+        }
+        if (entrada != ">") {
+          if (entrada != "") {
+            console.log(`Entrada: ${entrada}`);
+          }
+        } else {
+          this.conexionMensajesTHR.unsubscribe();
+        }
+      });
+    }, 650);
   }
-*/
-    /**
-   * Permite enviar messages de texto vía serial al conectarse por bluetooth.
-   */
+
   enviarmessages() {
     var sms = this.message + '\r';
     //this.presentToast('Enviando message: ' + sms);
     this.connectionMessages =this.blueService.dataInOut(sms).subscribe(data => {
       let entrada = data.substr(0, data.length - 1);
-      //this.presentToast('data:' + data);
+      this.presentToast('data:' + data);
       if (data && data.length > 0) {
         var obj = this.blueService.parseObdCommand(data);
         if (obj.name && obj.name.length > 0) {

@@ -13,7 +13,7 @@
 </ion-header>
 
 <ion-content padding>
-  <h5>Select ELM327 bluetooth device:</h5>
+  <h5>Select bluetooth device:</h5>
   
 
   <ion-refresher *ngIf="spinner === false" (ionRefresh)="refreshBluetooth($event)">
@@ -54,22 +54,29 @@
       
   -->
   <h5 *ngIf="estaConectado == true"><ion-icon name="bluetooth"></ion-icon> Connected to : {{conectadoA}}</h5>
-  <h5 *ngIf="estaConectado == false"><ion-icon name="bluetooth"></ion-icon> No active device</h5>
+  <h5 *ngIf="estaConectado == false"><ion-icon name="bluetooth"></ion-icon> No device conected</h5>
   
-  <!--
-  <ion-list *ngFor="let item of dataSalida">
+  
+  <!-- <ion-list *ngFor="let item of dataSalida">
     <ion-list-header>
       Respuestas
     </ion-list-header>
-    <ion-item>message: {{item.message}}</ion-item>
-    <ion-item>{{item.Modo}}, {{item.Nombre}}</ion-item>
-    <ion-item>{{item.Descripcion}}, Valor: {{item.Valor}}, Unidad: {{item.Unidad}}</ion-item>
-    <ion-item>{{item.Fecha}}</ion-item>
-  </ion-list>
-  <button ion-button (click)="limpiarmessages()" block>Limpiar messages</button>
-  <button ion-button (click)="iniciarIntervalo()" block>Iniciar Intervalo</button>
-
-  <form (ngSubmit)="enviarmessages();">
+    <ion-item>message: {{item.Message}}</ion-item>
+    <ion-item>{{item.Mode}}, {{item.Name}}</ion-item>
+    <ion-item>{{item.Description}}, Valor: {{item.Value}}, Unidad: {{item.Unit}}</ion-item>
+    <ion-item>{{item.Date}}</ion-item>
+  </ion-list> -->
+  <!-- <button ion-button (click)="limpiarmessages()" block>Limpiar messages</button>
+  <button ion-button (click)="iniciarIntervalo()" block>Iniciar Intervalo</button> -->
+  <!-- <radial-gauge
+    width="300" height="300" units="Km/H" title="Velocidad" min-value="0" max-value="260"
+    major-ticks="[0,20,40,60,80,100,120,140,160,180,200,220,240,260]" minor-ticks="2" stroke-ticks="true"
+    highlights='[ {"from": 0, "to": 50, "color": "rgba(255, 255, 186, 1)"}, {"from": 50, "to": 120, "color": "rgba(255, 223, 186, 1)"}, {"from": 120, "to": 260, "color": "rgba(255, 179, 186, 1)"}]'
+    color-plate="#fff" border-shadow-width="0" borders="false" border-radius="10" needle-type="arrow"
+    needle-width="2" needle-circle-size="7" needle-circle-outer="true" needle-circle-inner="false" animation-duration="1500"
+    animation-rule="linear" [attr.value]="velocidadActual" >
+  </radial-gauge> -->
+  <!-- <form (ngSubmit)="enviarmessages();">
     <ion-item>
       <ion-input type="text" [(ngModel)]="message" name="message"></ion-input>
     </ion-item>
@@ -77,13 +84,13 @@
       <button ion-button (click)="desconectar()" block>Desconectar</button>
       <button ion-button type="submit" block>Enviar</button>
     </ion-segment>
-  </form>
--->
+  </form> -->
+
   <div [hidden]="devices.length > 0 || spinner == true" text-center>
     <p>No device found, Please make sure your device is in range and discoverable</p>
   </div>
   <!-- cambiar esto despues
   <button ion-button (click)="siguiente()" block *ngIf="estaConectado == true">Siguiente</button>
   -->
-  <button ion-button (click)="start()" block>Start</button>
+  <button ion-button (click)="setConnectOBD()" block>Start</button>
 </ion-content>

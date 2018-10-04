@@ -10,20 +10,13 @@ import {GaugesModule }from 'ng-canvas-gauges/lib/';
 
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 import { BluetoothPage } from './../pages/bluetooth/bluetooth';
-//nuevas paginas
-import { SeleccionSkinPage } from './../pages/seleccion-skin/seleccion-skin';
-import { SkinDigitalUnoPage } from './../pages/skin-digital-uno/skin-digital-uno';
-import { SkinDigitalDosPage } from './../pages/skin-digital-dos/skin-digital-dos';
 //nuevo servicio
 import { CommunicationService } from '../app/Service/CommunicationService';
 
 @NgModule({
   declarations: [
     MyApp,
-    SeleccionSkinPage,
-    BluetoothPage,
-    SkinDigitalUnoPage,
-    SkinDigitalDosPage
+    BluetoothPage
   ],
   imports: [
     BrowserModule,
@@ -35,10 +28,7 @@ import { CommunicationService } from '../app/Service/CommunicationService';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    SeleccionSkinPage,
-    BluetoothPage,
-    SkinDigitalUnoPage,
-    SkinDigitalDosPage
+    BluetoothPage
   ],
   providers: [
     BluetoothSerial,
